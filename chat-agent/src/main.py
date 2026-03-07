@@ -1,7 +1,6 @@
 from workers import DurableObject, Response, WorkerEntrypoint
 from pyodide.ffi import to_js as _to_js
 from js import Object
-from urllib.parse import urlparse
 import json
 
 
@@ -25,13 +24,13 @@ class MyDurableObject(DurableObject):
         })
 
         prompt_text = """
-        You are an AI assistant helping students understand Cloudflare technology, programming, and early career opportunities.
+You are an AI assistant helping students understand Cloudflare technology, programming, and early career opportunities.
 
-        Answer clearly and briefly.
-        If the question is about Cloudflare careers or internships, explain it simply.
+Answer clearly and briefly.
+If the question is about Cloudflare careers or internships, explain it simply.
 
-        Conversation:
-        """
+Conversation:
+"""
         for item in history:
             prompt_text += f"{item['role']}: {item['content']}\n"
         prompt_text += "\nassistant:"
@@ -87,12 +86,12 @@ class Default(WorkerEntrypoint):
             if request.method == "OPTIONS":
                 return Response("", headers=CORS_HEADERS)
 
-            session = body.get("session", "default")
-            stub = self.env.MY_DURABLE_OBJECT.getByName(self.session)
-            
             if request.method == "POST":
                 body = await request.json()
                 message = body.get("message", "").strip()
+                session = body.get("session", "default")
+
+                stub = self.env.MY_DURABLE_OBJECT.getByName(session)
 
                 if not message:
                     return Response(
@@ -109,7 +108,12 @@ class Default(WorkerEntrypoint):
                 )
 
             if request.method == "DELETE":
+                body = await request.json()
+                session = body.get("session", "default")
+
+                stub = self.env.MY_DURABLE_OBJECT.getByName(session)
                 result = await stub.clear_history()
+
                 return Response(
                     json.dumps({"message": result}),
                     headers=CORS_HEADERS
