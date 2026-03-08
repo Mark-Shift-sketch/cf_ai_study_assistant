@@ -24,13 +24,13 @@ class MyDurableObject(DurableObject):
         })
 
         prompt_text = """
-You are an AI assistant helping students understand Cloudflare technology, programming, and early career opportunities.
+            You are an AI assistant helping students understand Cloudflare technology, programming, and early career opportunities.
 
-Answer clearly and briefly.
-If the question is about Cloudflare careers or internships, explain it simply.
+            Answer clearly and briefly.
+            If the question is about Cloudflare careers or internships, explain it simply.
 
-Conversation:
-"""
+            Conversation:
+            """
         for item in history:
             prompt_text += f"{item['role']}: {item['content']}\n"
         prompt_text += "\nassistant:"

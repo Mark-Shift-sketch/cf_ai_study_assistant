@@ -39,6 +39,18 @@ An AI-powered study assistant built on Cloudflare Workers.
 - HTML / CSS / JavaScript
 
 
+
+## Architecture
+
+User Browser  
+↓  
+Cloudflare Worker (Python)  
+↓  
+Durable Object (session memory)  
+↓  
+Workers AI (Llama 3.1)
+
+
 ## Deploy
 npx wrangler deploy
 
